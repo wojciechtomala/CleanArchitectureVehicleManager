@@ -1,5 +1,7 @@
-﻿using Domain.Entity.Authentication;
+﻿using Application.Contracts;
+using Domain.Entity.Authentication;
 using Infrastructure.Data;
+using Infrastructure.Repos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +50,7 @@ namespace Infrastructure.DependencyInjection
                     .AllowAnyHeader()
                     .AllowCredentials());
             });
+            services.AddScoped<IAccount, AccountRepository>();
             return services;
         }
     }

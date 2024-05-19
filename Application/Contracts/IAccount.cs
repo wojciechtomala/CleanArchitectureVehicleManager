@@ -9,6 +9,7 @@ namespace Application.Contracts
         Task CreateAdmin();
         Task<GeneralResponse> CreateAccountAsync(CreateAccountDTO model);
         Task<LoginResponse> LoginAccountAsync(LoginDTO model);
+        Task<LoginResponse> RefreshTokenAsync(RefreshTokenDTO model);
         Task<GeneralResponse> CreateRoleAsync(CreateRoleDTO model);
         Task<IEnumerable<GetRoleDTO>> GetRolesAsync();
         Task<IEnumerable<GetUsersWithRolesResponseDTO>> GetUsersWithRolesAsync();
