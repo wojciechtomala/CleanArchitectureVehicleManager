@@ -125,7 +125,7 @@ namespace Infrastructure.Repos
                 var admin = new CreateAccountDTO()
                 {
                     Name = "Admin",
-                    Password = "Admin123",
+                    Password = "Admin123$@#917236",
                     EmailAddress = "tomalaw@interia.pl",
                     Role = Application.Extensions.Constant.Role.Admin
                 };

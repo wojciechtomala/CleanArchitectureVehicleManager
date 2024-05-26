@@ -59,7 +59,7 @@ namespace API.Controllers
         [HttpGet("identity/role/list")]
         public async Task<ActionResult<IEnumerable<GetRoleDTO>>> GetRoles() => Ok(await account.GetRolesAsync());
 
-        [HttpGet("/setting")]
+        [HttpPost("/setting")]
         public async Task<IActionResult> CreateAdmin() {
             await account.CreateAdmin();
             return Ok();
