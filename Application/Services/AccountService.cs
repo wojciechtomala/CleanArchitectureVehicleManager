@@ -101,7 +101,7 @@ namespace Application.Services
             }
         }
 
-        public async Task<GeneralResponse> ChangeUserRole(ChangeUserRoleRequestDTO model) {
+        public async Task<GeneralResponse> ChangeUserRoleAsync(ChangeUserRoleRequestDTO model) {
             try
             {
                 var privateClient = await httpClientService.GetPrivateClient();
@@ -143,9 +143,9 @@ namespace Application.Services
             throw new NotImplementedException();
         }
 
-        public Task<GeneralResponse> ChangeUserRoleAsync(ChangeUserRoleRequestDTO model)
-        {
-            throw new NotImplementedException();
-        }
+        //public Task<GeneralResponse> ChangeUserRoleAsync(ChangeUserRoleRequestDTO model)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

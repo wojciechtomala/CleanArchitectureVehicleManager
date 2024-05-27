@@ -6,6 +6,7 @@ using WebUI;
 using Application.DependencyInjection;
 using Application.Extensions;
 using Application.Services;
+using NetcodeHub.Packages.Components;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -21,5 +22,5 @@ builder.Services.AddScoped<AuthenticationStateProvider>(provider => provider.Get
 
 // Register authentication services
 builder.Services.AddAuthorizationCore();
-
+builder.Services.AddVirtualizationService();
 await builder.Build().RunAsync();
