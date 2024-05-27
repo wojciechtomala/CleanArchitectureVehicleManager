@@ -174,29 +174,47 @@ namespace Infrastructure.Repos
 
         public async Task<LoginResponse> LoginAccountAsync(LoginDTO model)
         {
-            try {
+            try
+            {
                 var user = await FindUserByEmailAsync(model.EmailAddress);
                 if (user is null)
+                {
+                    Console.WriteLine("User not found");
                     return new LoginResponse(false, "User not found");
+                }
+
                 SignInResult result;
                 try
                 {
                     result = await signInManager.CheckPasswordSignInAsync(user, model.Password, false);
                 }
-                catch {
+                catch (Exception ex)
+                {
+                    Console.WriteLine("CheckPasswordSignInAsync exception: " + ex.Message);
                     return new LoginResponse(false, "Invalid credentials");
                 }
+
                 if (!result.Succeeded)
-                    return new LoginResponse(false, "Invalid credenitals");
+                {
+                    Console.WriteLine("Invalid credentials");
+                    return new LoginResponse(false, "Invalid credentials");
+                }
+
                 string jwtToken = await GenerateToken(user);
                 string refreshToken = GenerateRefreshToken();
+
                 if (string.IsNullOrEmpty(jwtToken) || string.IsNullOrEmpty(refreshToken))
-                    return new LoginResponse(false, "Error occured while logging in acocount");
-                else
-                    return new LoginResponse(true, $"{user.Name} successfully loged in", jwtToken, refreshToken);
+                {
+                    Console.WriteLine("Error generating tokens");
+                    return new LoginResponse(false, "Error occurred while logging in account");
+                }
+
+                Console.WriteLine("Login successful for user: " + user.Name);
+                return new LoginResponse(true, $"{user.Name} successfully logged in", jwtToken, refreshToken);
             }
             catch (Exception ex)
             {
+                Console.WriteLine("LoginAccountAsync exception: " + ex.Message);
                 return new LoginResponse(false, ex.Message);
             }
         }

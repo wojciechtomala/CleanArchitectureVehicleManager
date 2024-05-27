@@ -7,9 +7,9 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Application.Services
 {
-    internal class AccountService(HttpClientService httpClientService) : IAccountService
+    public class AccountService(HttpClientService httpClientService) : IAccountService
     {
-        public async Task<LoginResponse> LogInAccountAsync(LoginDTO model) {
+        public async Task<LoginResponse> LoginAccountAsync(LoginDTO model) {
             try
             {
                 var publicClient = httpClientService.GetPublicClient();
@@ -139,11 +139,6 @@ namespace Application.Services
         }
 
         public Task<GeneralResponse> CreateAccountAsync(CreateAccountDTO model)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<LoginResponse> LoginAccountAsync(LoginDTO model)
         {
             throw new NotImplementedException();
         }

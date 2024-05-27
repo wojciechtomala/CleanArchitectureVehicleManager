@@ -17,7 +17,7 @@ namespace Application.Extensions
                 var localStorageDTO = await localStorageService.GetModelFromToken();
                 if (string.IsNullOrEmpty(localStorageDTO.Token))
                     return client;
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(Constant.HttpClientHeaderScheme, localStorageDTO.Token)
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(Constant.HttpClientHeaderScheme, localStorageDTO.Token);
                 return client;
             } catch {
                 return new HttpClient();

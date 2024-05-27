@@ -1,0 +1,117 @@
+﻿@page "/account/identity/login"
+@using Application.DTO.Request.Account
+@using Application.Extensions
+@using NetcodeHub.Packages.Components.Validations.OnInput
+@using NetcodeHub.Packages.Components.Modal
+@using WebUI.Layout.Account.Identity
+@layout AuthenticationLayout
+
+<EditForm Model="LoginModel" OnSubmit="LoginAsync">
+    <div class="card border-primary shadow-lg text-dark p-5" style="opacity:0.8; margin-top:300px; min-width:350px; border-radius:5px;">
+        <div class="card-header text-dark fs-4 border-primary">Login</div>
+        <div>
+            <DataAnnotationsValidator />
+            <FloatingText class="form-control mb-3" Label="Email Address" Placeholder="user@example.com" @bind-Value="LoginModel.EmailAddress" />
+            <FloatingText Label="User Password" Type="@PasswordType" class="form-control" @bind-Value="LoginModel.Password" />
+            <a class="btn btn-link text-decoration-none float-end" style="margin-top:10px" onclick="ChangePasswordType"><small>@DisplayText</small></a>
+            <div class="form-group align-content-end">
+                <button>Submit</button>
+            </div>
+            <hr />
+        </div>
+    </div>
+</EditForm>
+
+<Modal @bind-Open="IsOpen" Actions="ButtonActions" BootstrapClass="" CustomStyle="min-width:250px; max-width:350px">
+    <ContentContent>
+        <span class="text-center text-muted">
+            <div class="card border-@BorderClass">
+                <div class="card-header">Information</div>
+                <div class="card-body text-muted"> @Message</div>
+            </div>
+        </span>
+    </ContentContent>
+
+    <ButtonTemplate>
+        <div class="d-flex justify-content-center align-content-center">
+            <button class="@ButtonClass btn-sm" value="ok">Ok</button>
+        </div>
+    </ButtonTemplate>
+</Modal>
+
+@code {
+    public bool IsOpen { get; set; }
+    public string? SelectedAction { get; set; }
+    string? Message;
+    string? BorderClass = "border-success rounded p-2 ml-2 mr-2";
+    string? ButtonClass = "btn btn-success";
+    public LoginDTO LoginModel { get; set; } = new();
+    private async Task LoginAsync()
+    {
+        var response = await accountService.LoginAccountAsync(LoginModel);
+        if (response.Flag)
+        {
+            var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
+            await customAuthStateProvider.UpdateAuthenticationState(new LocalStorageDTO()
+                { Token = response.Token, Refresh = response.RefreshToken });
+
+            NavManager.NavigateTo(uri: "content/home", true);
+        }
+        else
+        {
+            DangerBorderAndButton();
+            Message = response.Message;
+            IsOpen = true;
+        }
+    }
+
+    private string? PasswordType = "password";
+    private bool PasswordState = true;
+    private string DisplayText = "Show";
+    void ChangePasswordType()
+    {
+        PasswordState = !PasswordState;
+        if (!PasswordState)
+        {
+            PasswordType = "text";
+            DisplayText = "Hide";
+        }
+        else
+        {
+            PasswordType = "password";
+            DisplayText = "Show";
+        }
+    }
+    [CascadingParameter]
+    public Task<AuthenticationState>? ClientAuthState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            if((await ClientAuthState!).User.Identity!.IsAuthenticated == true)
+                NavManager.NavigateTo("content/home",false, true);
+        }
+        catch { }
+    }
+
+    void DangerBorderAndButton()
+    {
+        BorderClass = "border-danger rounded p-2 ml-2 mr-2";
+        ButtonClass = "btn btn-danger";
+    }
+
+    void ResetButtons()
+    {
+        BorderClass = "border-success rounded p-2 ml-2 mr-2";
+        ButtonClass = "btn btn-danger";
+    }
+
+    void ButtonActions(string action)
+    {
+        if (action == "ok")
+        {
+            IsOpen = false;    
+        }
+    }
+}
