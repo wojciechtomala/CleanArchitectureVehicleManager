@@ -48,19 +48,29 @@
     public LoginDTO LoginModel { get; set; } = new();
     private async Task LoginAsync()
     {
-        var response = await accountService.LoginAccountAsync(LoginModel);
-        if (response.Flag)
-        {
-            var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
-            await customAuthStateProvider.UpdateAuthenticationState(new LocalStorageDTO()
-                { Token = response.Token, Refresh = response.RefreshToken });
 
-            NavManager.NavigateTo(uri: "content/home", true);
+        try
+        {
+            var response = await accountService.LoginAccountAsync(LoginModel);
+            if (response.Flag)
+            {
+                var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
+                await customAuthStateProvider.UpdateAuthenticationState(new LocalStorageDTO()
+                { Token = response.Token, Refresh = response.RefreshToken});
+
+                NavManager.NavigateTo(uri: "content/home", true);
+            }
+            else
+            {
+                DangerBorderAndButton();
+                Message = response.Message;
+                IsOpen = true;
+            }
         }
-        else
+        catch
         {
             DangerBorderAndButton();
-            Message = response.Message;
+            Message = "Error";
             IsOpen = true;
         }
     }

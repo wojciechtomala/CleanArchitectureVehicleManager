@@ -109,7 +109,7 @@ namespace Infrastructure.Repos
                 string error = CheckResponse(result);
                 if(!string.IsNullOrEmpty(error))
                     return new GeneralResponse(false, error);
-                var (flag,message) = await AssignUserToRole(user, new IdentityRole() { Name = model.Name });
+                var (flag,message) = await AssignUserToRole(user, new IdentityRole() { Name = model.Role });
                 return new GeneralResponse(flag, message);
             }
             catch (Exception ex) {

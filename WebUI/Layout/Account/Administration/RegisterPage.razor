@@ -1,0 +1,157 @@
+﻿@page "/administration/account/identity/add-user"
+@using Application.DTO.Response.Account
+<div class="row">
+    <div class="col-lg-4"></div>
+    <div class="col-lg-4">
+        <EditForm Model="RegisterModel" OnSubmit="RegisterAsync">
+            <div class="card border-primary shadow-lg text-dark p-5" style="opacity: 0.8; min-width:350px; border-radius:10px">
+                <div class="card-header text-dark fs-4 border-primary">Add user</div>
+                <div class="card-body" style="opacity:1">
+                    <DataAnnotationsValidator />
+                    <FloatingText class="form-control mb-3" Label="Full Name" Placeholder="Name Surname" @bind-Value="RegisterModel.Name" />
+                    <FloatingText class="form-control mb-3" Label="Email" Placeholder="person@example.com" @bind-Value="RegisterModel.EmailAddress" />
+                    <label class="form-label">Select Role</label>
+                    <InputSelect @bind-Value="RegisterModel.Role" class="form-select mb-3">
+                        <option>Select user role</option>
+                        @foreach (var role in AvailableRoles!)
+                        {
+                            <option value="@role.Name">@role.Name</option>
+                        }
+                    </InputSelect>
+                    <FloatingText class="form-control mb-3" Label="User Password" @bind-Value="RegisterModel.Password" />
+                    <FloatingText class="form-control mb-3" Label="Confirm Password" @bind-Value="RegisterModel.ConfirmPassword" />
+                    <a class="btn btn-link text-decoration-none float-end" style="margin-top:10px" @onclick="ChangePasswordType"><small>@DisplayText</small></a>
+                    <div class="form-group align-content-end">
+                        <button class="float-end btn btn-success mt-4 w-50" type="submit" style="position:absolute; right: 0; margin: 0">Create account</button>
+                    </div>
+
+                    <hr class="text-primary" />
+
+                    <div class="card-footer mt-5">
+                        <ValidationSummary class="form-control text-danger text-decoration-none p-4"></ValidationSummary>
+                    </div>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+    <div class="col-lg-4"></div>
+</div>
+<Modal @bind-Open="IsOpen" Actions="ButtonActions" BootstrapClass=@BorderClass CustomStyle="min-width:250px; max-width:350px">
+    <ContentContent>
+        <span class="text-center text-muted">
+            <div class="card border-@BorderClass">
+                <div class="card-header">Information</div>
+                <div class="card-body text-muted">@Message</div>
+            </div>
+        </span>
+    </ContentContent>
+
+    <ButtonTemplate>
+        <div class="d-flex justify-content-center align-content-center">
+            <button class="@ButtonClass btn-sm" value="ok">Ok</button>
+        </div>
+    </ButtonTemplate>
+</Modal>
+
+@code {
+    public bool IsOpen { get; set; }
+    public string? SelectedAction { get; set; }
+    string? Message;
+    public bool IsOperationSuccess { get; set; } = false;
+    string? BorderClass = "border-success rounded p-2 ml-2 mr-2";
+    string? ButtonClass = "btn btn-success";
+    private CreateAccountDTO RegisterModel { get; set; } = new();
+    private IEnumerable<GetRoleDTO>? AvailableRoles { get; set; }
+
+    // Konstruktor komponentu
+    public RegisterPage()
+    {
+        // Inicjalizacja AvailableRoles jako pustej kolekcji
+        AvailableRoles = Enumerable.Empty<GetRoleDTO>();
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        if (AvailableRoles == null || !AvailableRoles.Any())
+        {
+            AvailableRoles = await accountService.GetRolesAsync();
+        }
+    }
+
+    private async Task RegisterAsync()
+    {
+        try
+        {
+            ResetButtons();
+            var response = await accountService.CreateAccountAsync(RegisterModel);
+            if (response.Flag)
+            {
+                IsOperationSuccess = true;
+                SuccessBorderAndButton();
+                Message = response.Message;
+                IsOpen = true;
+            }
+            else
+            {
+                IsOperationSuccess = false;
+                DangerBorderAndButton();
+                Message = response.Message;
+                IsOpen = true;
+            }
+        }
+        catch
+        {
+            DangerBorderAndButton();
+            Message = "Unknown error has occurred";
+            IsOpen = true;
+        }
+    }
+
+    void DangerBorderAndButton()
+    {
+        BorderClass = "border-danger rounded p-2 ml-2 mr-2";
+        ButtonClass = "btn btn-danger";
+    }
+
+    void SuccessBorderAndButton()
+    {
+        BorderClass = "border-success rounded p-2 ml-2 mr-2";
+        ButtonClass = "btn btn-success";
+    }
+
+    void ResetButtons()
+    {
+        BorderClass = "border-success rounded p-2 ml-2 mr-2";
+        ButtonClass = "btn btn-success";
+    }
+
+    void ButtonActions(string action)
+    {
+        SelectedAction = action;
+        if (action == "ok")
+        {
+            IsOpen = false;
+            if (IsOperationSuccess)
+                RegisterModel = new();
+        }
+    }
+
+    private string? PasswordType = "password";
+    private bool PasswordState = true;
+    private string DisplayText = "Show";
+
+    void ChangePasswordType()
+    {
+        PasswordState = !PasswordState;
+        if (!PasswordState)
+        {
+            PasswordType = "text";
+            DisplayText = "Hide";
+        }
+        else
+        {
+            PasswordType = "password";
+            DisplayText = "Show";
+        }
+    }
+}

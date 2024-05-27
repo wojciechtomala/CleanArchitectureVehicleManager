@@ -26,7 +26,7 @@ namespace Application.Services
             }
         }
 
-        public async Task<GeneralResponse> RegisterAccountAsync(CreateAccountDTO model) {
+        public async Task<GeneralResponse> CreateAccountAsync(CreateAccountDTO model) {
             try {
                 var publicClient = httpClientService.GetPublicClient();
                 var response = await publicClient.PostAsJsonAsync(Constant.RegisterRoute, model);
@@ -134,11 +134,6 @@ namespace Application.Services
         }
 
         public Task CreateAdmin()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<GeneralResponse> CreateAccountAsync(CreateAccountDTO model)
         {
             throw new NotImplementedException();
         }

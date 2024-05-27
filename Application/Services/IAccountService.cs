@@ -13,5 +13,6 @@ namespace Application.Services
         Task<GeneralResponse> CreateRoleAsync(CreateRoleDTO model);
         Task<IEnumerable<GetUsersWithRolesResponseDTO>> GetUsersWithRolesAsync();
         Task<GeneralResponse> ChangeUserRoleAsync(ChangeUserRoleRequestDTO model);
+        Task<IEnumerable<GetRoleDTO>> GetRolesAsync();
     }
 }
