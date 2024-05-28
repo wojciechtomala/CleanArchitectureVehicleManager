@@ -18,5 +18,26 @@
             public const string Admin = "Admin";
             public const string User = "User";
         }
+
+        // VEHICLE:
+        public const string AddVehicleRoute = "api/vehicle/add-vehicle";
+        public const string AddVehicleBrandRoute = "api/vehicle/add-vehicle-brand";
+        public const string AddVehicleOwnerRoute = "api/vehicle/add-vehicle-owner";
+
+        public const string GetVehicleRoute = "api/vehicle/get-vehicle";
+        public const string GetVehicleBrandRoute = "api/vehicle/get-vehicle-brand";
+        public const string GetVehicleOwnerRoute = "api/vehicle/get-vehicle-owner";
+
+        public const string GetVehiclesRoute = "api/vehicle/get-vehicles";
+        public const string GetVehicleBrandsRoute = "api/vehicle/get-vehicle-brands";
+        public const string GetVehicleOwnersRoute = "api/vehicle/get-vehicle-owners";
+
+        public const string UpdateVehicleRoute = "api/vehicle/update-vehicle";
+        public const string UpdateVehicleBrandRoute = "api/vehicle/update-vehicle-brand";
+        public const string UpdateVehicleOwnerRoute = "api/vehicle/update-vehicle-owner";
+
+        public const string DeleteVehicleRoute = "api/vehicle/delete-vehicle";
+        public const string DeleteVehicleBrandRoute = "api/vehicle/delete-vehicle-brand";
+        public const string DeleteVehicleOwnerRoute = "api/vehicle/delete-vehicle-owner";
     }
 }

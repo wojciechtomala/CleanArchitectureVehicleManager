@@ -1,8 +1,402 @@
 ﻿@page "/content/home"
+@using Application.DTO.Request.Vehicles
+@using Application.DTO.Response
+@using Application.DTO.Response.Vehicles
+@using Mapster
 @using Microsoft.AspNetCore.Authorization
+@using NetcodeHub.Packages.Components
+@using NetcodeHub.Packages.Components.Toast
+@inject ToastService toastService
 @attribute [Authorize(Roles = "Admin, User")]
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="row">
+    <div class="col-xl-12 col-lg-12 colcol-md-12 col-sm-12">
+        <div class="card border-1 shadow-lg">
+              <div class="card-header fw-bold text-info fs-4">
+                  Vehicles List
+                  <button class="btn btn-info float-end" @onclick="AddVehicleClicked">Add new +</button>
+              </div>
+              <div class="card-body">
+                  @if (Vehicles != null)
+                {
+                   <NetcodeHubDataGrid
+                        HeaderColor="@HeaderColor.Info"
+                        HeaderFont="@HeaderFont.TimesNewRoman"
+                        HeaderSize="@HeaderSize.Large"
+                        ContentFont="@ContentFont.Cambria"
+                        DataGridFormat="@DataGridFormat.Info"
+                        CustomStyle="padding:10px"
+                   >
+                   <HeaderTemplate>
+                       <th>Id</th>
+                       <th>Name</th>
+                       <th>Description</th>
+                       <th>Brand</th>
+                       <th>Owner</th>
+                       <th>Actions</th>
+                   </HeaderTemplate>
+                   <ContentTemplate>
+                            @foreach(var item in Vehicles)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Description</td>
+                                    <td>@item.VehicleBrand.Name</td>
+                                    <td>@item.VehicleOwner.Name</td>
+                                    <td>
+                                        <small class="text-info cursorStyle" @onclick="@( () => EditVehicleClicked(item) )">Edit</small>
+                                        <AuthorizeView Roles="Admin">
+                                            <small class="text-danger cursorStyle" @onclick="@( () => DeleteVehicleClicked(item) )">Delete</small>
+                                        </AuthorizeView>
+                                    </td>
+                                </tr>
+                            }
+                        </ContentTemplate>
+                    </NetcodeHubDataGrid>
+                }else
+                {
+                    
+                    <em class="text-success text-center fw-bold shadow-lg border-1">Loading...</em>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+        <div class="card border-1 shadow-lg">
+            <div class="card-header fw-bold text-success fs-2">
+                Vehicle Brands
+                <button class="btn btn-success float-end" @onclick="AddBrandClicked">Add Brand +</button>
+            </div>
+            <div class="card-body">
+                @if (VehicleBrands != null)
+                {
+                    <NetcodeHubDataGrid
+                                        HeaderColor="@HeaderColor.Info"
+                                        HeaderFont="@HeaderFont.TimesNewRoman"
+                                        HeaderSize="@HeaderSize.Large"
+                                        ContentFont="@ContentFont.Cambria"
+                                        DataGridFormat="@DataGridFormat.Success"
+                                        CustomStyle="padding:10px">
+                        <HeaderTemplate>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Loaction</th>
+                            <th>Actions</th>
+                        </HeaderTemplate>
+                        <ContentTemplate>
+                            @foreach (var item in VehicleBrands)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Location</td>
+                                    <td>
+                                        <small class="text-info cursorStyle" @onclick="@(() => EditVehicleBrandClicked(item))">Edit</small>
+                                        <AuthorizeView Roles="Admin">
+                                            <small class="text-danger cursorStyle" @onclick="@(() => DeleteVehicleBrandClicked(item))">Delete</small>
+                                        </AuthorizeView>
+                                    </td>
+                                </tr>
+                            }
+                        </ContentTemplate>
+                    </NetcodeHubDataGrid>
+                }
+                else
+                {
+                    <em class="text-success text-center fw-bold shadow-lg border-1">Loading...</em>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+        <div class="card border-1 shadow-lg">
+            <div class="card-header fw-bold text-success fs-2">
+                Vehicle Owners
+                <button class="btn btn-success float-end" @onclick="AddOwnerClicked">Add Owner +</button>
+            </div>
+            <div class="card-body">
+                @if (VehicleOwners != null)
+                {
+                    <NetcodeHubDataGrid 
+                        HeaderColor="@HeaderColor.Info"
+                        HeaderFont="@HeaderFont.TimesNewRoman"
+                        HeaderSize="@HeaderSize.Large"
+                        ContentFont="@ContentFont.Cambria"
+                        DataGridFormat="@DataGridFormat.Success"
+                        CustomStyle="padding:10px"
+                    >
+                        <HeaderTemplate>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Actions</th>
+                        </HeaderTemplate>
+                        <ContentTemplate>
+                            @foreach (var item in VehicleOwners)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Address</td>
+                                    <td>
+                                        <small class="text-info cursorStyle" @onclick="@(() => EditVehicleOwnerClicked(item))">Edit</small>
+                                        <AuthorizeView Roles="Admin">
+                                            <small class="text-danger cursorStyle" @onclick="@(() => DeleteVehicleOwnerClicked(item))">Delete</small>
+                                        </AuthorizeView>
+                                    </td>
+                                </tr>
+                            }
+                        </ContentTemplate>
+                    </NetcodeHubDataGrid>
+                }
+                else
+                {
+                    <em class="text-success text-center fw-bold shadow-lg border-1">Loading...</em>
+                }
+            </div>
+        </div>
+    </div>
+</div>
 
-Welcome to your new app.
+<Confirmation @ref="confirmation" Instruction="@Instruction" Action="ConfirmDelete" BoostrapClass="@ConfirmationBorder"></Confirmation>
+<Toast @ref="toastService.ToastComponent" IconClass="bi bi-check" Persist="true" Duration="@ToastDuration"/>
+
+<Modal @bind-Open="IsOpen" BootstrapClass="@BorderClass" CustomStyle="min-width:400px max-width:500px;">
+    <ContentContent>
+        <div class="card border-1 shadow-lg p-3">
+            <div class="card-header">
+                @ModalTitle
+                <span class="float-end txt-danger fw-bold cursorStyle" @onclick="CancelForm">X</span>
+            </div>
+            <div class="card-body"></div>
+            @if (ShowVehicleBrandModel)
+            {
+                <EditForm Model="CreateVehicleBrandModel" OnSubmit="SaveVehicleBrand">
+                    <DataAnnotationsValidator/>
+                    <FloatingText Label="Brand Name" @bind-Value="CreateVehicleBrandModel.Name" class="form-control"></FloatingText>
+                    <FloatingText Label="Brand Location" @bind-Value="CreateVehicleBrandModel.Location" class="form-control"></FloatingText>
+                    <div class="form-group mt-3">
+                        <button class="btn btn-primary float-end" type="submit">Save</button>
+                    </div>
+                    <div class="input-group mt-3">
+                        <ValidationSummary/>
+                    </div>
+                </EditForm>    
+            }
+            @if (ShowVehicleOwnerModel)
+            {
+                <EditForm Model="CreateVehicleOwnerModel" OnSubmit="SaveVehicleOwner">
+                    <DataAnnotationsValidator />
+                    <FloatingText Label="Owner Name" @bind-Value="CreateVehicleOwnerModel.Name" class="form-control"></FloatingText>
+                    <FloatingText Label="Owner Location" @bind-Value="CreateVehicleOwnerModel.Address" class="form-control"></FloatingText>
+                    <div class="form-group mt-3">
+                        <button class="btn btn-primary float-end" type="submit">Save</button>
+                    </div>
+                    <div class="input-group mt-3">
+                        <ValidationSummary />
+                    </div>
+                </EditForm>
+            }
+            @if (ShowVehicleModel)
+            {
+                
+                <EditForm Model="CreateVehicleModel" OnSubmit="SaveVehicle">
+                    <DataAnnotationsValidator/>
+                    <FloatingText Label="Vehicle Name" @bind-Value="CreateVehicleModel.Name" class="form-control"></FloatingText>
+                    <FloatingTextArea Label="Vehicle Description" @bind-Value="CreateVehicleModel.Description" class="form-control"></FloatingTextArea>
+
+                    <label class="form-label mt-2">Select brand</label>
+                    <select class="form-select" @bind="CreateVehicleModel.VehicleBrandId">
+                        <option>Select brand</option>
+                        @if (VehicleBrands != null)
+                        {
+                            foreach (var item in VehicleBrands!)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        }
+                    </select>
+
+
+                    <label class="form-label mt-2">Select owner</label>
+                    <select class="form-select" @bind="CreateVehicleModel.VehicleOwnerId">
+                        <option>Select owner</option>
+                        @if (VehicleOwners != null)
+                        {
+                            foreach (var item in VehicleOwners!)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        }
+                    </select>
+
+                    <div class="form-group mt-3">
+                        <button class="btn btn-primary float-end" type="submit">Save</button>
+                    </div>
+                    <div class="input-group mt-3">
+                        <ValidationSummary/>
+                    </div>
+                </EditForm> 
+            }
+        </div>
+    </ContentContent>
+</Modal>
+
+@code{
+    private string ModalTitle = string.Empty;
+    private string BorderClass = string.Empty;
+    public bool IsOpen { get; set; }
+
+    public int ToastDuration { get; set; } = 3000;
+    Confirmation? confirmation;
+    string? ConfirmationBorder;
+    string Instruction = "Are you sure?";
+
+    private CreateVehicleRequestDTO CreateVehicleModel { get; set; } = new();
+    private CreateVehicleBrandRequestDTO CreateVehicleBrandModel { get; set; } = new();
+    private CreateVehicleOwnerRequestDTO CreateVehicleOwnerModel { get; set; } = new();
+
+    public IEnumerable<GetVehicleResponseDTO> Vehicles { get; set; } = [];
+    public IEnumerable<GetVehicleBrandResponseDTO> VehicleBrands { get; set; } = [];
+    public IEnumerable<GetVehicleOwnerResponseDTO> VehicleOwners { get; set; } = [];
+
+    protected override async Task OnInitializedAsync() {
+        Vehicles = await vehicleService.GetVehicles();
+        VehicleBrands = await vehicleService.GetVehicleBrands();
+        VehicleOwners = await vehicleService.GetVehicleOwners();
+    }
+
+    public bool ShowVehicleModel { get; set; } = false;
+    public bool ShowVehicleBrandModel { get; set; } = false;
+    public bool ShowVehicleOwnerModel { get; set; } = false;
+
+
+    void AddOwnerClicked() {
+        ModalTitle = "Add Vehicle owner";
+        ResetAllShowStates();
+        ResetAllModels();
+        BorderClass = "border-warning rounded p-2 ml-2 mr-2 shadow-lg";
+        ShowVehicleOwnerModel = true;
+        OpenModal();
+    }
+
+    void AddBrandClicked() {
+        ModalTitle = "Add Vehicle brand";
+        ResetAllShowStates();
+        ResetAllModels();
+        BorderClass = "border-warning rounded p-2 ml-2 mr-2 shadow-lg";
+        ShowVehicleOwnerModel = true;
+        OpenModal();
+    }
+
+    async Task AddVehicleClicked()
+    {
+        VehicleBrands = await vehicleService.GetVehicleBrands();
+        VehicleOwners = await vehicleService.GetVehicleOwners();
+        ModalTitle = "Add Vehicle";
+        ResetAllShowStates();
+        ResetAllModels();
+        BorderClass = "border-warning rounded p-2 ml-2 mr-2 shadow-lg";
+        ShowVehicleOwnerModel = true;
+        OpenModal();
+    }
+
+    // void CreateVehicle() => ShowVehicleModel = true;
+    // void CreateVehicleBrand() => ShowVehicleBrandModel = true;
+    // void CreateVehicleOwner() => ShowVehicleOwnerModel = true;
+
+    void ResetAllModels() {
+        CreateVehicleModel = new();
+        CreateVehicleBrandModel = new();
+        CreateVehicleOwnerModel = new();
+    }
+
+    void ResetAllShowStates() {
+        ShowVehicleOwnerModel = false;
+        ShowVehicleBrandModel = false;
+        ShowVehicleModel = false;
+    }
+
+    void CancelForm() => IsOpen = false;
+    void OpenModal() => IsOpen = true;
+
+
+    private int IdHolder = 0;
+    public string ModelName = string.Empty;
+    GeneralResponse Response = new();
+
+    async Task SaveVehicleBrand(){
+        if (IdHolder > 0)
+        {
+
+            var data = CreateVehicleBrandModel.Adapt(new UpdateVehicleBrandRequestDTO());
+            data.Id = IdHolder;
+            Response = await vehicleService.UpdateVehicleBrand(data);
+        }
+        else
+        {
+            Response = await vehicleService.AddVehicleBrand(CreateVehicleBrandModel);    
+        }
+        await DisplayToastMessage(Response);
+    }
+
+    async Task SaveVehicleOwner() {
+        if (IdHolder > 0)
+        {
+
+            var data = CreateVehicleOwnerModel.Adapt(new UpdateVehicleOwnerRequestDTO());
+            data.Id = IdHolder;
+            Response = await vehicleService.UpdateVehicleOwner(data);
+        }
+        else
+        {
+            Response = await vehicleService.AddVehicleOwner(CreateVehicleOwnerModel);
+        }
+        await DisplayToastMessage(Response);
+    }
+
+    async Task SaveVehicle()
+    {
+        if (IdHolder > 0)
+        {
+
+            var data = CreateVehicleModel.Adapt(new UpdateVehicleRequestDTO());
+            data.Id = IdHolder;
+            Response = await vehicleService.UpdateVehicle(data);
+        }
+        else
+        {
+            Response = await vehicleService.AddVehicle(CreateVehicleModel);
+        }
+        await DisplayToastMessage(Response);
+    }
+
+    private async Task DisplayToastMessage(GeneralResponse response){
+        if (ModelName.Equals(ModelNames.Vehicle, StringComparison.OrdinalIgnoreCase))
+            Vehicles = await vehicleService.GetVehicles();
+        if (ModelName.Equals(ModelNames.VehicleBrand, StringComparison.OrdinalIgnoreCase))
+            VehicleBrands = await vehicleService.GetVehicleBrands();
+        if (ModelName.Equals(ModelNames.VehicleOwner, StringComparison.OrdinalIgnoreCase))
+            VehicleOwners = await vehicleService.GetVehicleOwners();
+        if (response.Flag)
+        {
+            toastService.ShowSuccessToast("Info", response.Message);
+        }
+        else
+        {
+            toastService.ShowErrorToast("Alert", response.Message);
+        }
+        IdHolder = 0;
+        ModelName = string.Empty;
+    }
+
+    public static class ModelNames {
+        public const string Vehicle = "Vehicle";
+        public const string VehicleBrand = "VehicleBrand";
+        public const string VehicleOwner = "VehicleOwner";
+    }
+}

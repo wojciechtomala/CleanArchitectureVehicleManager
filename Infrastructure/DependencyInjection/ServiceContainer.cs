@@ -51,6 +51,7 @@ namespace Infrastructure.DependencyInjection
                     .AllowCredentials());
             });
             services.AddScoped<IAccount, AccountRepository>();
+            services.AddScoped<IVehicle, VehicleRepo>();
             return services;
         }
     }
