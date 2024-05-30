@@ -1,5 +1,6 @@
 using Infrastructure.DependencyInjection;
 using System.Globalization;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,40 @@ app.UseCors("WebUI");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+// MIDDLEWARE:
+app.Use(async (context, next) =>
+{
+    try
+    {
+        var reqContent = new StringBuilder();
+        reqContent.AppendLine("REQUEST:");
+        reqContent.AppendLine($"METHOD: {context.Request.Method.ToUpper()}");
+        reqContent.AppendLine($"PATH: {context.Request.Path}");
+        reqContent.AppendLine("USED HEADERS:");
+        foreach (var (headerKey, headerValue) in context.Request.Headers)
+        {
+            reqContent.AppendLine($"{headerKey}: {headerValue}");
+        }
+
+        reqContent.AppendLine("BODY:");
+        context.Request.EnableBuffering();
+        using (var requestReader = new StreamReader(context.Request.Body, Encoding.UTF8, leaveOpen: true))
+        {
+            var content = await requestReader.ReadToEndAsync();
+            reqContent.AppendLine(content);
+            context.Request.Body.Position = 0;
+        }
+        Console.Write(reqContent.ToString());
+
+        await next(context);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex);
+        throw;
+    }
+});
 
 app.MapControllers();
 
