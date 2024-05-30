@@ -7,37 +7,36 @@
 @using NetcodeHub.Packages.Components
 @using NetcodeHub.Packages.Components.Toast
 @inject ToastService toastService
+@inject IVehicleService vehicleService
 @attribute [Authorize(Roles = "Admin, User")]
 <PageTitle>Home</PageTitle>
 
 <div class="row">
     <div class="col-xl-12 col-lg-12 colcol-md-12 col-sm-12">
         <div class="card border-1 shadow-lg">
-              <div class="card-header fw-bold text-info fs-4">
-                  Vehicles List
-                  <button class="btn btn-info float-end" @onclick="AddVehicleClicked">Add new +</button>
-              </div>
-              <div class="card-body">
-                  @if (Vehicles != null)
+            <div class="card-header fw-bold text-info fs-4">
+                Vehicles List
+                <button class="btn btn-info float-end" @onclick="AddVehicleClicked">Add new +</button>
+            </div>
+            <div class="card-body">
+                @if (Vehicles != null)
                 {
-                   <NetcodeHubDataGrid
-                        HeaderColor="@HeaderColor.Info"
-                        HeaderFont="@HeaderFont.TimesNewRoman"
-                        HeaderSize="@HeaderSize.Large"
-                        ContentFont="@ContentFont.Cambria"
-                        DataGridFormat="@DataGridFormat.Info"
-                        CustomStyle="padding:10px"
-                   >
-                   <HeaderTemplate>
-                       <th>Id</th>
-                       <th>Name</th>
-                       <th>Description</th>
-                       <th>Brand</th>
-                       <th>Owner</th>
-                       <th>Actions</th>
-                   </HeaderTemplate>
-                   <ContentTemplate>
-                            @foreach(var item in Vehicles)
+                    <NetcodeHubDataGrid HeaderColor="@HeaderColor.Info"
+                                        HeaderFont="@HeaderFont.TimesNewRoman"
+                                        HeaderSize="@HeaderSize.Large"
+                                        ContentFont="@ContentFont.Cambria"
+                                        DataGridFormat="@DataGridFormat.Info"
+                                        CustomStyle="padding:10px">
+                        <HeaderTemplate>
+                            <th>Id</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Brand</th>
+                            <th>Owner</th>
+                            <th>Actions</th>
+                        </HeaderTemplate>
+                        <ContentTemplate>
+                            @foreach (var item in Vehicles)
                             {
                                 <tr>
                                     <td>@item.Id</td>
@@ -55,9 +54,10 @@
                             }
                         </ContentTemplate>
                     </NetcodeHubDataGrid>
-                }else
+                }
+                else
                 {
-                    
+
                     <em class="text-success text-center fw-bold shadow-lg border-1">Loading...</em>
                 }
             </div>
@@ -74,8 +74,7 @@
             <div class="card-body">
                 @if (VehicleBrands != null)
                 {
-                    <NetcodeHubDataGrid
-                                        HeaderColor="@HeaderColor.Info"
+                    <NetcodeHubDataGrid HeaderColor="@HeaderColor.Info"
                                         HeaderFont="@HeaderFont.TimesNewRoman"
                                         HeaderSize="@HeaderSize.Large"
                                         ContentFont="@ContentFont.Cambria"
@@ -121,14 +120,12 @@
             <div class="card-body">
                 @if (VehicleOwners != null)
                 {
-                    <NetcodeHubDataGrid 
-                        HeaderColor="@HeaderColor.Info"
-                        HeaderFont="@HeaderFont.TimesNewRoman"
-                        HeaderSize="@HeaderSize.Large"
-                        ContentFont="@ContentFont.Cambria"
-                        DataGridFormat="@DataGridFormat.Success"
-                        CustomStyle="padding:10px"
-                    >
+                    <NetcodeHubDataGrid HeaderColor="@HeaderColor.Info"
+                                        HeaderFont="@HeaderFont.TimesNewRoman"
+                                        HeaderSize="@HeaderSize.Large"
+                                        ContentFont="@ContentFont.Cambria"
+                                        DataGridFormat="@DataGridFormat.Success"
+                                        CustomStyle="padding:10px">
                         <HeaderTemplate>
                             <th>Id</th>
                             <th>Name</th>
@@ -163,7 +160,7 @@
 </div>
 
 <Confirmation @ref="confirmation" Instruction="@Instruction" Action="ConfirmDelete" BoostrapClass="@ConfirmationBorder"></Confirmation>
-<Toast @ref="toastService.ToastComponent" IconClass="bi bi-check" Persist="true" Duration="@ToastDuration"/>
+<Toast @ref="toastService.ToastComponent" IconClass="bi bi-check" Persist="true" Duration="@ToastDuration" />
 
 <Modal @bind-Open="IsOpen" BootstrapClass="@BorderClass" CustomStyle="min-width:400px max-width:500px;">
     <ContentContent>
@@ -176,16 +173,16 @@
             @if (ShowVehicleBrandModel)
             {
                 <EditForm Model="CreateVehicleBrandModel" OnSubmit="SaveVehicleBrand">
-                    <DataAnnotationsValidator/>
+                    <DataAnnotationsValidator />
                     <FloatingText Label="Brand Name" @bind-Value="CreateVehicleBrandModel.Name" class="form-control"></FloatingText>
                     <FloatingText Label="Brand Location" @bind-Value="CreateVehicleBrandModel.Location" class="form-control"></FloatingText>
                     <div class="form-group mt-3">
                         <button class="btn btn-primary float-end" type="submit">Save</button>
                     </div>
                     <div class="input-group mt-3">
-                        <ValidationSummary/>
+                        <ValidationSummary />
                     </div>
-                </EditForm>    
+                </EditForm>
             }
             @if (ShowVehicleOwnerModel)
             {
@@ -203,9 +200,9 @@
             }
             @if (ShowVehicleModel)
             {
-                
+
                 <EditForm Model="CreateVehicleModel" OnSubmit="SaveVehicle">
-                    <DataAnnotationsValidator/>
+                    <DataAnnotationsValidator />
                     <FloatingText Label="Vehicle Name" @bind-Value="CreateVehicleModel.Name" class="form-control"></FloatingText>
                     <FloatingTextArea Label="Vehicle Description" @bind-Value="CreateVehicleModel.Description" class="form-control"></FloatingTextArea>
 
@@ -238,15 +235,15 @@
                         <button class="btn btn-primary float-end" type="submit">Save</button>
                     </div>
                     <div class="input-group mt-3">
-                        <ValidationSummary/>
+                        <ValidationSummary />
                     </div>
-                </EditForm> 
+                </EditForm>
             }
         </div>
     </ContentContent>
 </Modal>
 
-@code{
+@code {
     private string ModalTitle = string.Empty;
     private string BorderClass = string.Empty;
     public bool IsOpen { get; set; }
@@ -264,7 +261,8 @@
     public IEnumerable<GetVehicleBrandResponseDTO> VehicleBrands { get; set; } = [];
     public IEnumerable<GetVehicleOwnerResponseDTO> VehicleOwners { get; set; } = [];
 
-    protected override async Task OnInitializedAsync() {
+    protected override async Task OnInitializedAsync()
+    {
         Vehicles = await vehicleService.GetVehicles();
         VehicleBrands = await vehicleService.GetVehicleBrands();
         VehicleOwners = await vehicleService.GetVehicleOwners();
@@ -274,8 +272,8 @@
     public bool ShowVehicleBrandModel { get; set; } = false;
     public bool ShowVehicleOwnerModel { get; set; } = false;
 
-
-    void AddOwnerClicked() {
+    void AddOwnerClicked()
+    {
         ModalTitle = "Add Vehicle owner";
         ResetAllShowStates();
         ResetAllModels();
@@ -284,12 +282,13 @@
         OpenModal();
     }
 
-    void AddBrandClicked() {
+    void AddBrandClicked()
+    {
         ModalTitle = "Add Vehicle brand";
         ResetAllShowStates();
         ResetAllModels();
         BorderClass = "border-warning rounded p-2 ml-2 mr-2 shadow-lg";
-        ShowVehicleOwnerModel = true;
+        ShowVehicleBrandModel = true;
         OpenModal();
     }
 
@@ -301,21 +300,19 @@
         ResetAllShowStates();
         ResetAllModels();
         BorderClass = "border-warning rounded p-2 ml-2 mr-2 shadow-lg";
-        ShowVehicleOwnerModel = true;
+        ShowVehicleModel = true;
         OpenModal();
     }
 
-    // void CreateVehicle() => ShowVehicleModel = true;
-    // void CreateVehicleBrand() => ShowVehicleBrandModel = true;
-    // void CreateVehicleOwner() => ShowVehicleOwnerModel = true;
-
-    void ResetAllModels() {
+    void ResetAllModels()
+    {
         CreateVehicleModel = new();
         CreateVehicleBrandModel = new();
         CreateVehicleOwnerModel = new();
     }
 
-    void ResetAllShowStates() {
+    void ResetAllShowStates()
+    {
         ShowVehicleOwnerModel = false;
         ShowVehicleBrandModel = false;
         ShowVehicleModel = false;
@@ -324,30 +321,30 @@
     void CancelForm() => IsOpen = false;
     void OpenModal() => IsOpen = true;
 
-
     private int IdHolder = 0;
     public string ModelName = string.Empty;
     GeneralResponse Response = new();
 
-    async Task SaveVehicleBrand(){
+    async Task SaveVehicleBrand()
+    {
         if (IdHolder > 0)
         {
-
             var data = CreateVehicleBrandModel.Adapt(new UpdateVehicleBrandRequestDTO());
             data.Id = IdHolder;
             Response = await vehicleService.UpdateVehicleBrand(data);
         }
         else
         {
-            Response = await vehicleService.AddVehicleBrand(CreateVehicleBrandModel);    
+            Response = await vehicleService.AddVehicleBrand(CreateVehicleBrandModel);
         }
+        ModelName = ModelNames.Vehicle;
         await DisplayToastMessage(Response);
     }
 
-    async Task SaveVehicleOwner() {
+    async Task SaveVehicleOwner()
+    {
         if (IdHolder > 0)
         {
-
             var data = CreateVehicleOwnerModel.Adapt(new UpdateVehicleOwnerRequestDTO());
             data.Id = IdHolder;
             Response = await vehicleService.UpdateVehicleOwner(data);
@@ -356,6 +353,7 @@
         {
             Response = await vehicleService.AddVehicleOwner(CreateVehicleOwnerModel);
         }
+        ModelName = ModelNames.VehicleBrand;
         await DisplayToastMessage(Response);
     }
 
@@ -363,7 +361,6 @@
     {
         if (IdHolder > 0)
         {
-
             var data = CreateVehicleModel.Adapt(new UpdateVehicleRequestDTO());
             data.Id = IdHolder;
             Response = await vehicleService.UpdateVehicle(data);
@@ -372,10 +369,12 @@
         {
             Response = await vehicleService.AddVehicle(CreateVehicleModel);
         }
+        ModelName = ModelNames.VehicleOwner;
         await DisplayToastMessage(Response);
     }
 
-    private async Task DisplayToastMessage(GeneralResponse response){
+    private async Task DisplayToastMessage(GeneralResponse response)
+    {
         if (ModelName.Equals(ModelNames.Vehicle, StringComparison.OrdinalIgnoreCase))
             Vehicles = await vehicleService.GetVehicles();
         if (ModelName.Equals(ModelNames.VehicleBrand, StringComparison.OrdinalIgnoreCase))
@@ -384,6 +383,7 @@
             VehicleOwners = await vehicleService.GetVehicleOwners();
         if (response.Flag)
         {
+            ResetAllModels();
             toastService.ShowSuccessToast("Info", response.Message);
         }
         else
@@ -394,7 +394,91 @@
         ModelName = string.Empty;
     }
 
-    public static class ModelNames {
+    void EditVehicleClicked(GetVehicleResponseDTO model)
+    {
+        ModalTitle = "Edit Vehicle";
+        IdHolder = model.Id;
+        CreateVehicleModel = model.Adapt<CreateVehicleRequestDTO>();
+        ResetAllShowStates();
+        BorderClass = "border-info rounded p-2 ml-2 mr-2 shadow-lg";
+        ShowVehicleModel = true;
+        OpenModal();
+    }
+
+    void EditVehicleBrandClicked(GetVehicleBrandResponseDTO model)
+    {
+        ModalTitle = "Edit Vehicle Brand";
+        IdHolder = model.Id;
+        CreateVehicleBrandModel = model.Adapt<CreateVehicleBrandRequestDTO>();
+        ResetAllShowStates();
+        BorderClass = "border-info rounded p-2 ml-2 mr-2 shadow-lg";
+        ShowVehicleBrandModel = true;
+        OpenModal();
+    }
+
+    void EditVehicleOwnerClicked(GetVehicleOwnerResponseDTO model)
+    {
+        ModalTitle = "Edit Vehicle Owner";
+        IdHolder = model.Id;
+        CreateVehicleOwnerModel = model.Adapt<CreateVehicleOwnerRequestDTO>();
+        ResetAllShowStates();
+        BorderClass = "border-info rounded p-2 ml-2 mr-2 shadow-lg";
+        ShowVehicleOwnerModel = true;
+        OpenModal();
+    }
+
+    void DeleteVehicleClicked(GetVehicleResponseDTO model)
+    {
+        IdHolder = model.Id;
+        ModelName = ModelNames.Vehicle;
+        ConfirmationBorder = "btn-info";
+        ShowConfirmation();
+    }
+
+    void DeleteVehicleBrandClicked(GetVehicleBrandResponseDTO model)
+    {
+        IdHolder = model.Id;
+        ModelName = ModelNames.VehicleBrand;
+        ConfirmationBorder = "btn-info";
+        ShowConfirmation();
+    }
+
+    void DeleteVehicleOwnerClicked(GetVehicleOwnerResponseDTO model)
+    {
+        IdHolder = model.Id;
+        ModelName = ModelNames.VehicleOwner;
+        ConfirmationBorder = "btn-info";
+        ShowConfirmation();
+    }
+
+    void ShowConfirmation()
+    {
+        confirmation.Show();
+    }
+
+    async Task ConfirmDelete()
+    {
+        GeneralResponse response = new();
+        if (ModelName.Equals(ModelNames.Vehicle, StringComparison.OrdinalIgnoreCase))
+        {
+            response = await vehicleService.DeleteVehicle(IdHolder);
+            Vehicles = await vehicleService.GetVehicles();
+        }
+        else if (ModelName.Equals(ModelNames.VehicleBrand, StringComparison.OrdinalIgnoreCase))
+        {
+            response = await vehicleService.DeleteVehicleBrand(IdHolder);
+            VehicleBrands = await vehicleService.GetVehicleBrands();
+        }
+        else if (ModelName.Equals(ModelNames.VehicleOwner, StringComparison.OrdinalIgnoreCase))
+        {
+            response = await vehicleService.DeleteVehicleOwner(IdHolder);
+            VehicleOwners = await vehicleService.GetVehicleOwners();
+        }
+        await DisplayToastMessage(response);
+    }
+
+    public static class ModelNames
+    {
         public const string Vehicle = "Vehicle";
         public const string VehicleBrand = "VehicleBrand";
         public const string VehicleOwner = "VehicleOwner";
