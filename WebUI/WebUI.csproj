@@ -14,6 +14,7 @@
 	  <PackageReference Include="NetcodeHub.Packages.Components.DataGrid" Version="1.0.0" />
 	  <PackageReference Include="NetcodeHub.Packages.Components.Toast" Version="1.0.1" />
 	  <PackageReference Include="Mapster" Version="7.4.0" />
+	  <PackageReference Include="xunit" Version="2.8.1" />
   </ItemGroup>
 
   <ItemGroup>
